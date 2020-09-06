@@ -19,41 +19,40 @@ import com.educandoweb.course.entities.User;
 import com.educandoweb.course.services.UserService;
 
 @RestController
-@RequestMapping(value = "/users")
+@RequestMapping(value = "/{id}")
 public class UserResource {
-
-	@Autowired 
+	
+	@Autowired
 	private UserService service;
 	
 	@GetMapping
-	public ResponseEntity<List<User>> findAll() {
-		List<User> list = service.findAll();
+	public ResponseEntity<List<User>> findAll(){
+		List<User>list = service.findAll();
 		return ResponseEntity.ok().body(list);
 	}
 	
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<User> findById(@PathVariable Long id) {
-		User obj = service.findById(id);
-		return ResponseEntity.ok().body(obj);
+	public ResponseEntity<User> findById(@PathVariable Long id){
+		User user = service.findById(id);
+		return ResponseEntity.ok().body(user);
 	}
 	
 	@PostMapping
-	public ResponseEntity<User> insert(@RequestBody User obj){
-		obj = service.insert(obj);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
-		return ResponseEntity.created(uri).body(obj);
+	public ResponseEntity<User> insert(@RequestBody User user){
+		user = service.insert(user);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.getId()).toUri();
+		return ResponseEntity.created(uri).body(user);
+	}
+	
+	@PutMapping(value = "/{id}")
+	public ResponseEntity<User> update(@PathVariable Long id, @RequestBody User user){
+		user = service.update(id, user);
+		return ResponseEntity.ok().body(user);
 	}
 	
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<Void> delete(@PathVariable Long id){
 		service.delete(id);
 		return ResponseEntity.noContent().build();
-	}
-	
-	@PutMapping(value = "/{id}")
-	public ResponseEntity<User> update(@PathVariable Long id, @RequestBody User obj){
-		obj = service.update(id, obj);
-		return ResponseEntity.ok().body(obj);
-		
-	}
+	}	
 }
